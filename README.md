@@ -22,6 +22,30 @@ A production-ready real-time chat application faithfully replicating WhatsApp We
 
 ---
 
+⏳ Note on Deployment
+
+⚠️ This project is hosted on Render (free tier).
+The server may take 30–60 seconds to wake up on the first request.
+Please wait a moment after opening the link.
+
+---
+
+🔐 Test Credentials
+
+You can use the following test account to explore the application:
+
+--
+User 1 =>
+Email: viratkohli@gmail.com
+Password: test123456
+
+--
+User 2 =>
+Email: rohitsharma@gmail.com
+Password: test123456
+
+---
+
 ## 🗂 Project Structure
 
 ```
