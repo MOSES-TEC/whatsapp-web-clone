@@ -172,4 +172,7 @@ The app opens at **http://localhost:3000**
 | Database | MongoDB + Mongoose |
 | Auth | JWT + bcrypt |
 | Styling | Pure CSS (WhatsApp dark theme) |
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5505489 (update in ui for chat window)

@@ -45,17 +45,17 @@ const Avatar = ({ user, size = 46, showOnline = false, isOnline = false }) => {
           {initials}
         </div>
       )}
-      {showOnline && (
-        <span className={`online-dot ${isOnline ? "online" : "offline"}`} />
+      {showOnline && isOnline && (
+        <span className="online-dot online" />
       )}
     </div>
   );
 };
 
-const Sidebar = () => {
+// onSelectUser is passed from ChatPage for mobile handling
+const Sidebar = ({ onSelectUser }) => {
   const { user, logout } = useAuth();
-  const { users, selectedUser, selectUser, unreadCounts, isUserOnline } =
-    useChat();
+  const { users, selectedUser, selectUser, unreadCounts, isUserOnline } = useChat();
   const [search, setSearch] = useState("");
   const [showMenu, setShowMenu] = useState(false);
 
@@ -63,19 +63,35 @@ const Sidebar = () => {
     u.username.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleUserClick = (u) => {
+    if (onSelectUser) {
+      // Mobile: use parent handler which also toggles view
+      onSelectUser(u);
+    } else {
+      // Desktop: just select
+      selectUser(u);
+    }
+  };
+
   return (
     <aside className="sidebar">
       {/* Header */}
       <div className="sidebar-header">
         <Avatar user={user} size={40} />
-        <h2 className="sidebar-title">WhatsApp</h2>
         <div className="sidebar-actions">
+          {/* New chat icon */}
+          <button className="icon-btn" title="New chat">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+              <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+            </svg>
+          </button>
+          {/* Menu */}
           <button
             className="icon-btn"
             title="Menu"
             onClick={() => setShowMenu(!showMenu)}
           >
-            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
               <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
             </svg>
           </button>
@@ -119,14 +135,14 @@ const Sidebar = () => {
               <div
                 key={u._id}
                 className={`user-item ${isActive ? "active" : ""}`}
-                onClick={() => selectUser(u)}
+                onClick={() => handleUserClick(u)}
               >
                 <Avatar user={u} size={46} showOnline isOnline={online} />
                 <div className="user-item-info">
                   <div className="user-item-top">
                     <span className="user-name">{u.username}</span>
                     {u.lastSeen && (
-                      <span className="user-time">
+                      <span className={`user-time ${unread > 0 ? "unread-time" : ""}`}>
                         {formatTime(u.lastSeen)}
                       </span>
                     )}

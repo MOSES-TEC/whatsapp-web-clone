@@ -43,8 +43,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/messages", messageRoutes);
 
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", message: "WhatsApp Clone API running" });
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
 // 404 handler
