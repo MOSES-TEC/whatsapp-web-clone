@@ -39,7 +39,7 @@ whatsapp-clone/
 │   ├── socket/
 │   │   └── socketManager.js # All Socket.io event handlers
 │   ├── server.js            # Express + Socket.io bootstrap
-│   ├── .env.example
+│   ├── .env
 │   └── package.json
 │
 └── frontend/
@@ -62,7 +62,7 @@ whatsapp-clone/
     │   ├── App.js
     │   ├── App.css              # All styles (dark WhatsApp theme)
     │   └── index.js
-    ├── .env.example
+    ├── .env
     └── package.json
 ```
 
@@ -76,20 +76,11 @@ whatsapp-clone/
 |------|---------|
 | Node.js | >= 16.x |
 | npm | >= 8.x |
-| MongoDB | >= 5.x (local) OR MongoDB Atlas (cloud) |
+| MongoDB | MongoDB Atlas (cloud) |
 
 ---
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/whatsapp-clone.git
-cd whatsapp-clone
-```
-
----
-
-### 2. Backend Setup
+### 1. Backend Setup
 
 ```bash
 cd backend
@@ -99,7 +90,7 @@ npm install
 Copy and configure the environment file:
 
 ```bash
-cp .env.example .env
+cp .env
 ```
 
 Edit `backend/.env`:
@@ -128,7 +119,7 @@ The server starts on **http://localhost:5000**
 
 ---
 
-### 3. Frontend Setup
+### 2. Frontend Setup
 
 Open a new terminal:
 
@@ -140,7 +131,7 @@ npm install
 Copy and configure the environment file:
 
 ```bash
-cp .env.example .env
+cp .env
 ```
 
 Edit `frontend/.env`:
@@ -160,95 +151,6 @@ The app opens at **http://localhost:3000**
 
 ---
 
-## 🔌 API Reference
-
-### Auth
-
-| Method | Endpoint | Body | Description |
-|--------|----------|------|-------------|
-| POST | `/api/auth/register` | `{ username, email, password }` | Register new user |
-| POST | `/api/auth/login` | `{ email, password }` | Login, returns JWT |
-| GET | `/api/auth/me` | — | Get current user (auth required) |
-
-### Users
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/users` | Get all users except self |
-| GET | `/api/users/:id` | Get a specific user |
-| PUT | `/api/users/profile` | Update profile |
-
-### Messages
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/messages/:userId` | Get conversation messages |
-| POST | `/api/messages` | Send message (REST fallback) |
-| GET | `/api/messages/unread/count` | Get unread counts per sender |
-
----
-
-## ⚡ Socket.io Events
-
-### Client → Server
-
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `joinRoom` | `{ receiverId }` | Join a private chat room |
-| `leaveRoom` | `{ receiverId }` | Leave a chat room |
-| `sendMessage` | `{ receiverId, content }` | Send a real-time message |
-| `typing` | `{ receiverId }` | Start typing indicator |
-| `stopTyping` | `{ receiverId }` | Stop typing indicator |
-| `markRead` | `{ senderId }` | Mark messages as read |
-
-### Server → Client
-
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `newMessage` | `Message` | Incoming new message |
-| `onlineUsers` | `string[]` | Current online user IDs |
-| `userOnline` | `{ userId, username }` | A user came online |
-| `userOffline` | `{ userId, lastSeen }` | A user went offline |
-| `userTyping` | `{ userId, username }` | Someone is typing |
-| `userStopTyping` | `{ userId }` | Someone stopped typing |
-| `messagesRead` | `{ byUserId }` | Messages were read |
-| `messageNotification` | `{ message, sender }` | New message notification |
-
----
-
-## 🗄 Database Schemas
-
-### User
-
-```js
-{
-  username:  String (unique, 3–30 chars),
-  email:     String (unique),
-  password:  String (bcrypt hashed),
-  avatar:    String (URL, optional),
-  status:    String (bio, max 139 chars),
-  isOnline:  Boolean,
-  lastSeen:  Date,
-  socketId:  String (transient)
-}
-```
-
-### Message
-
-```js
-{
-  sender:      ObjectId → User,
-  receiver:    ObjectId → User,
-  content:     String (max 4096 chars),
-  messageType: Enum ['text', 'image', 'file'],
-  isRead:      Boolean,
-  readAt:      Date,
-  roomId:      String (sorted "userId1_userId2", indexed)
-}
-```
-
----
-
 ## 🧪 Testing the App
 
 1. Open **two browser windows** (or use Incognito for the second)
@@ -257,18 +159,6 @@ The app opens at **http://localhost:3000**
 4. Click on the other user in the sidebar to start chatting
 5. Messages appear in real-time in both windows
 6. Watch for **typing indicators**, **online status**, and **read receipts**
-
----
-
-## 🔧 Troubleshooting
-
-| Issue | Fix |
-|-------|-----|
-| `MongoDB connection error` | Ensure MongoDB is running locally (`mongod`) or check Atlas URI |
-| `CORS error` | Verify `CLIENT_URL` in backend `.env` matches your frontend URL |
-| `Socket auth error` | Check that `REACT_APP_SOCKET_URL` points to the backend |
-| `Port already in use` | Change `PORT` in backend `.env` and update frontend `.env` |
-| `npm install` fails | Ensure Node >= 16: `node --version` |
 
 ---
 
@@ -283,8 +173,3 @@ The app opens at **http://localhost:3000**
 | Auth | JWT + bcrypt |
 | Styling | Pure CSS (WhatsApp dark theme) |
 
----
-
-## 📄 License
-
-MIT License — free to use, modify, and distribute.
